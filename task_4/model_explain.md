@@ -1,10 +1,10 @@
 # 모델 요약
 
 ## 1. EfficientNetB0
+https://colab.research.google.com/drive/11vGKPCEjzFe-yEq1eYmnOdtMB7v4khqy?usp=sharing
 ### 텐서플로 공식 홈페이지 내용 일부 변형
 ### Encoder:
 - **EfficientNetB0**: 사전 훈련된 컨볼루션 신경망으로, `include_top=False`를 사용하여 최종 분류 계층을 제거하고 다른 출력 크기에 재사용.
-- **Trainable**: `False`로 설정되어 EfficientNetB0의 가중치가 훈련 중에 업데이트되지 않음을 나타냄. 이는 전이 학습을 사용할 때 사전 학습된 특징을 활용하면서 변경하지 않는 일반적인 방법.
 
 ### Decoder:
 - EfficientNetB0에 의해 추출된 특징을 분류를 위해 처리.
@@ -17,14 +17,11 @@
 ### 추가 사항:
 - **모델 컴파일**:
   - Adam 최적화 함수와 클래스가 상호 배타적인 다중 클래스 분류 작업에 적합한 Sparse Categorical Crossentropy 손실 함수를 사용함.
-- **모델 훈련**:
-  - 훈련 데이터셋(`train_ds`)에서 `fit` 메서드를 사용하여 모델을 훈련시키고, 별도의 데이터셋(`val_ds`)에서 검증을 수행함.
-  - EarlyStopping 콜백을 사용하여 검증 손실이 두 연속 에포크 동안 개선되지 않을 경우 훈련을 중단함으로써 과적합을 방지함.
 
 ## 2. Conv2D LSTM
-
+https://colab.research.google.com/drive/1z-1yDcFST_2mF42msmPLhLTq1QCKG0aD?usp=sharing
 ### Encoder:
-- `TimeDistributed` 레이어 시리즈를 사용하여 구성되며, 이 레이어는 `Conv2D` 및 `MaxPooling2D` 연산을 비디오 시퀀스의 각 프레임에 걸쳐 프레임별로 적용.
+- `TimeDistributed` 레이어 시리즈를 사용하여 구성되며, `Conv2D` 및 `MaxPooling2D` 연산을 비디오 시퀀스의 각 프레임에 걸쳐 프레임별로 적용.
 - **구성 요소**:
   - **TimeDistributed(Conv2D)**: 각 프레임에 독립적으로 컨볼루션 레이어를 적용함.
   - **TimeDistributed(MaxPooling2D)**: 컨볼루션 레이어 출력의 공간 차원을 줄임.
@@ -38,13 +35,14 @@
 
 ### 추가 사항:
 - **데이터 준비 및 로딩**:
-  - 파일(`ucf101_dataset.npz`)에서 데이터를 로드하고 `train_test_split`을 사용하여 훈련 및 테스트 세트로 분리함.
-  - 제너레이터 함수(`generator`)가 데이터의 배치를 생성하며, 이는 효율적인 로딩 및 훈련을 위해 `tf.data.Dataset.from_generator`에 공급됨.
+  - 파일(`ucf101_dataset.npz`)에서 데이터 로드.
+  - 제너레이터 함수(`generator`)가 데이터의 배치를 생성하며, 이는 효율적인 로딩 및 훈련을 위해 `tf.data.Dataset.from_generator`에 공급.
 - **모델 훈련**:
   - Adam 최적화 함수와 다중 클래스 분류에 적합한 범주형 크로스엔트로피 손실로 모델을 컴파일함.
-  - `fit` 메서드를 사용하여 `train_dataset`에서 모델을 훈련시키며, `test_dataset`에서 검증을 수행함. EarlyStopping을 사용하여 검증 정확도가 개선되지 않을 때 훈련을 중단함으로써 과적합을 방지함.
+  
 
-## 3. Context LSTM
+## 3. Context LSTM 
+https://colab.research.google.com/drive/14YH8U9zRfvOLOzkaI2apXvb__ScNHvgP?usp=sharing
 ### 1번의 데이터 설계구조 Context LSTM에 맞게 수정
 ### Encoder:
 - **구성 요소**:
@@ -60,7 +58,5 @@
 
 ### 추가 사항:
 - **모델 훈련 및 컴파일**:
-  - ConvLSTM 모델은 Adam 최적화 함수와 Sparse Categorical Crossentropy 손실로 컴파일됨. 데이터셋(`train_ds`)에서 훈련되고 다른 데이터셋(`val_ds`)에서 검증을 받으며, 검증 손실에 기반한 EarlyStopping을 사용하여 과적합을 방지함.
+  - ConvLSTM 모델은 Adam 최적화 함수와 Sparse Categorical Crossentropy 손실로 컴파일.
   - 최종 레이어의 softmax 활성화 함수와 SparseCategoricalCrossentropy의 사용을 통해 다중 클래스 분류를 목표로 함.
-- **유틸리티 함수**: 이 코드 조각에서 명시적으로 정의되지 않았지만, EarlyStopping과 같은 콜백을 사용하여 훈련 성능을 모니터링하고 검증 세트에서 개선이 멈출 때 훈련을 중단함.
-- 이 아키텍처는 비디오 또는 순차 데이터를 다루는 작업에 특히 적합하며, 비디오에서의 동작 인식과 같이 시간적 역동성을 이해하는 것이 중요한 작업에 유용함. ResNet152와 같은 사전 훈련된 모델을 특징 추출에 사용하는 전이 학습은 시각적 작업에서 성능을 향상시키는 데 도움됨.

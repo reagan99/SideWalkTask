@@ -1,0 +1,21 @@
+텐서플로 ucf 데이터 셋
+https://www.tensorflow.org/datasets/catalog/ucf101?hl=ko
+
+ucf101 모델 벤치마크 사이트
+https://paperswithcode.com/sota/action-recognition-in-videos-on-ucf101
+
+SMART
+https://paperswithcode.com/paper/smart-frame-selection-for-action-recognition
+
+ConText LSTM
+https://arxiv.org/abs/2203.06610
+
+LSTM 모델 참고
+https://github.com/HHTseng/video-classification/blob/master/README.md
+
+All you need is attention
+https://arxiv.org/abs/1706.03762
+
+efficientnet / resnet
+https://norman3.github.io/papers/docs/efficient_net.html
+
